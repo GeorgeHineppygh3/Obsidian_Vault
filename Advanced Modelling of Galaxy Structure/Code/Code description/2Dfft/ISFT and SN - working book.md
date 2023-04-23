@@ -2,7 +2,9 @@
 s:: true
 ---
 
-### Information taken from papers listed in [Creating Spiral fourier transform](Creating%20Spiral%20fourier%20transform.md)
+
+
+### Information taken from papers listed in [Creating Spiral fourier transform](./Creating%20Spiral%20fourier%20transform.md)
 
 ### Signal to noise ratio for weighting power spectrum
 
