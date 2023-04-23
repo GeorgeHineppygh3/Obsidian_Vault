@@ -1,6 +1,15 @@
 ---
 s:: true
 ---
+---
+s:: true
+---
+---
+s:: true
+---
+---
+s:: true
+---
 
 
 Inner lindblad resonance - 0.8kpc - Fletcher 2011
@@ -19,7 +28,7 @@ Merrifield - https://iopscience.iop.org/article/10.1086/591516/pdf
 
 https://www.stsci.edu/~brammer/symposium_posters/posters/Fusco_Michael_poster.pdf
 
-https://iopscience.iop.org/article/10.1086/133217/pdf - using  $H_\alpha$ to trace corotation through movement of neutral and ionised gas
+https://iopscience.iop.org/article/10.1086/133217/pdf - using  $H_\\alpha$ to trace corotation through movement of neutral and ionised gas
 
 - Indication of a resonance at 6kpc but cannot be 4:1 as this would mov the ILR too far out - and cannot be the outer as ILR would be too close
 - Tully (1974a) derived the same CR using linear density-wave theory based on the observed rate of opening ofthe spiral arms and the rotation curve, making the assumption that the ILR occurs where the spiral arms begin. Elmegreen et al. (1989) used a power law rotation curve combined with the assumption that certain morphological features occur at resonances to arrive at a similar conclusion -   [so 4.8kpc] 
