@@ -1,6 +1,15 @@
 ---
 s:: true
 ---
+---
+s:: true
+---
+---
+s:: true
+---
+---
+s:: true
+---
 
 link to sheet of galaxy pars:
 

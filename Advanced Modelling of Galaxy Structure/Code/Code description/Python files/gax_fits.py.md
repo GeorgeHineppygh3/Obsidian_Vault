@@ -1,4 +1,13 @@
 ---
+s:: true
+---
+---
+s:: true
+---
+---
+s:: true
+---
+---
 s::  true
 ---
 Supporting python file to [Borge_test.ipynb](../../../../PDF%20exports/Borge_test.ipynb.md) 
@@ -1144,7 +1153,7 @@ def Spiral_Fourier_Transform(Image,Table,R_min_multiple,m,plot,save):
     # Calculate winding angle from maximum of Spiral Power spectrum
     p_max = p.ravel()[A.argmax()]
     phi = np.degrees(np.arctan(-m/p_max))
-    print('Winding angle \u03C6 =', phi)
+    print('Winding angle \\u03C6 =', phi)
 
     if plot == True:
         # Spiral Power Spectrum
@@ -1164,7 +1173,7 @@ def Spiral_Fourier_Transform(Image,Table,R_min_multiple,m,plot,save):
         plt.imshow(img_lnr_theta.T, vmin=1000, vmax=1200,
            extent=(lnr_min, lnr_max, 0, theta_max),
            origin='lower', aspect='auto');
-        plt.xlabel('\u03B8 (radians)')
+        plt.xlabel('\\u03B8 (radians)')
         plt.ylabel('log(R)')
         if save == True:
             plt.savefig('log(R) Theta image.png')
@@ -1181,7 +1190,7 @@ def Spiral_Fourier_Transform(Image,Table,R_min_multiple,m,plot,save):
         ax.plot(x0,y0,'xk')
         ax.add_patch(R_e_1)
         ax.add_patch(R_e_05)
-        ax.legend(['center','$R_e$','${}\, R_e$'.format(R_min_multiple)])
+        ax.legend(['center','$R_e$','${}\\, R_e$'.format(R_min_multiple)])
         ax.axis('off')
         if save == True:
             plt.savefig('Labelled R_e image.png')
@@ -1308,7 +1317,7 @@ def Spiral_power_spec(Image,Table,R_min_multiple,m):
 	# Calculate winding angle from maximum of Spiral Power spectrum
     p_max = p.ravel()[A.argmax()]
     phi = np.degrees(np.arctan(-m/p_max))
-    #print('Winding angle \u03C6 =', phi)
+    #print('Winding angle \\u03C6 =', phi)
     return A, p, p_max, phi
 ```
 #### Function description: 
@@ -1530,7 +1539,7 @@ def Spiral_power_spec(Image,Table,R_min_multiple,m):
     # Calculate winding angle from maximum of Spiral Power spectrum
     p_max = p.ravel()[A.argmax()]
     phi = np.degrees(np.arctan(-m/p_max))
-    #print('Winding angle \u03C6 =', phi)
+    #print('Winding angle \\u03C6 =', phi)
 
 	# Calculate signal to noise
     SN_m, SN_w = SN(A)
@@ -2523,7 +2532,7 @@ def plot_radial_pitch_angle_dependance(Candidate,phi_array,Inner_radii_multiples
     M_str_arr = np.array(['m = 1','m = 2','m = 3','m = 4','m = 5','m = 6'])
     plt.figure()
     avg_pitch = np.around(np.mean(phi_array[:,1]),1)
-    plt.title('{} Average winding angle (m=2): {}\u00B0'.format(Candidate,avg_pitch))
+    plt.title('{} Average winding angle (m=2): {}\\u00B0'.format(Candidate,avg_pitch))
     plt.ylabel('Pitch angle (deg)')
     plt.xlabel('Inner Radius / $R_e$')
     for i in range(0,len(m_array)):
