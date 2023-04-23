@@ -8,10 +8,10 @@ s:: true
 
 This angle, as well as the line of nodes position, can be determined following the procedure outlined by CA82, which consists in calculating the $|A(p, m)|$ spectra for the main component, disregarding secondary ones, for all possible values of P.A. and w. The $S/N$, for each spectrum,
 is given by the expression:
-$$\frac{S}{N} = (|A(p,m)|_{max} - L)/\sigma$$
+$$\\frac{S}{N} = (|A(p,m)|_{max} - L)/\\sigma$$
 
 where $A(p, m) _{max}$ is the maximum amplitude of the Fourier coefficients, $L$ is the mean level out of the main peak and σ is a rms estimate of the spectrum given by:
-$$\sigma^2 = \langle(|A(p,m)|-L)^2\rangle$$ 
+$$\\sigma^2 = \\langle(|A(p,m)|-L)^2\\rangle$$ 
 The adopted pair of values P.A. and is the one that gives the higher S/N.
 
 Implementing into code,
@@ -48,15 +48,15 @@ This code creates a list of weightings for signal to noise for each $p$ in $A(p,
 
 One of the most powerful tools provided by 2DFFT is the ability to run an Inverse FFT. After having de-projected the images and identified the dominant harmonic modes, we can calculate the inverse of the transforms according to Seigar et al. (2005).
 The inverse transform can be written as:
-$$S(u, \theta) = \sum_m S_m(u) e^{im\theta} \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;(9)$$
+$$S(u, \\theta) = \\sum_m S_m(u) e^{im\\theta} \\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;(9)$$
 where 
-$$S_m(u) = \frac{D}{e^{2u}4π^2} \int_{-p}^{+p} G_m(p)A(p, m)e^{ipu}\;dp \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;(10)$$
+$$S_m(u) = \\frac{D}{e^{2u}4π^2} \\int_{-p}^{+p} G_m(p)A(p, m)e^{ipu}\\;dp \\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;(10)$$
 
 Gm(p) is a high-frequency filter used by Puerari & Dottori (1992). For the logarithmic spiral governed by Equation 4, it has the form:
 
-$$G_m(p) = e^{ − \frac{1}{2} (\frac{p−p_{max}}{25})^2} \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; (11)$$
+$$G_m(p) = e^{ − \\frac{1}{2} (\\frac{p−p_{max}}{25})^2} \\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\; (11)$$
 
-This filter is also used to smooth the $A(p, m)$ spectra at the interval ends ($p− = −50$ and $p+ = 50$ with $dp = 0.25$) (Puerari & Dottori 1992). Equation 9 is designed as such, to allow the user to create an inverse transform for a selected number of harmonic components. For example, the inverse transform can be calculated for one component, e.g., $m = 2$, or any number of components can be combined to yield a composite result, e.g., $m = 2, 3,\, \&\, 4$. Once an Inverse FFT is created, it can be directly compared to the de- projected image of the galaxy, allowing us to effectively observe what the code is seeing. Figure 16a and Figure 20 show images of spiral galaxies overlaid with contours representing the results of Inverse FFTs of the same galaxy. The contours are the real part of the complex spatial function of Equation 9. The use of these images to analyse a galaxy can lead to more confident determination of pitch angle.
+This filter is also used to smooth the $A(p, m)$ spectra at the interval ends ($p− = −50$ and $p+ = 50$ with $dp = 0.25$) (Puerari & Dottori 1992). Equation 9 is designed as such, to allow the user to create an inverse transform for a selected number of harmonic components. For example, the inverse transform can be calculated for one component, e.g., $m = 2$, or any number of components can be combined to yield a composite result, e.g., $m = 2, 3,\\, \\& \\, 4$. Once an Inverse FFT is created, it can be directly compared to the de- projected image of the galaxy, allowing us to effectively observe what the code is seeing. Figure 16a and Figure 20 show images of spiral galaxies overlaid with contours representing the results of Inverse FFTs of the same galaxy. The contours are the real part of the complex spatial function of Equation 9. The use of these images to analyse a galaxy can lead to more confident determination of pitch angle.
 
 ## Alternative filtering idea:
 
@@ -81,7 +81,7 @@ This has the same structure as `number_of_arms` should implement there.
 
 ### Discretising the integrals:
 
-$$S_m(u) = \frac{D}{e^{2u}4π^2} \sum_{-p}^{+p} G_m(p)A(p, m)e^{ipu}\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;(10)$$
+$$S_m(u) = \\frac{D}{e^{2u}4π^2} \\sum_{-p}^{+p} G_m(p)A(p, m)e^{ipu}\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;\\;(10)$$
 The signal $A(p,m)$ has shape `500,` 
 
 Once this function has been made we can overlay the dominant components on the image like this:
@@ -120,7 +120,7 @@ This is clearly not quite doing what I think it is.
 
 ### Weighting by S/N:
 
-So $A(p,m)$ is our output of the spiral Fourier transform $\therefore$  input that into discretised sum over p:
+So $A(p,m)$ is our output of the spiral Fourier transform $\\therefore$  input that into discretised sum over p:
 
 - Want to create a filter out of the `SN_w` list to select components grouped around the dominant 20  spatial frequencies
 - This could later be expanded to look at the S/N of other harmonic modes ($m$) to look at getting the plotting as good as it can look
