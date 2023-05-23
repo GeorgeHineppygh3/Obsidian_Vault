@@ -1,15 +1,7 @@
 ---
 s:: true
 ---
----
-s:: true
----
----
-s:: true
----
----
-s::  true
----
+
 Supporting python file to [Borge_test.ipynb](../../../../PDF%20exports/Borge_test.ipynb.md) 
 
 File contains functions for the easy manipulation and formatting of data from fits files.
@@ -2627,3 +2619,367 @@ The `R_e_in_KPC()` function calculates the effective radius (R_e) of a galaxy in
 -   `Distance_to_object` must be in kiloparsecs.
 -   The function opens the FITS file using `fits.open()` from the Astropy library, retrieves the necessary header information, and calculates the pixel-to-kiloparsec conversion factors based on the `CD1_1` and `CD2_2` header keywords.
 -   The function then calculates the effective radius of the galaxy in kiloparsecs by multiplying the pixel size (`R_e_in_pixels`) with the pixel-to-kiloparsec conversion factors (`kpc_per_pixel_x` and `kpc_per_pixel_y`) in x and y directions, respectively, and taking the square root of the sum of the squares of these values.
+
+## Update:
+
+- Updating the `Spiral_normal_distributions` functions to have multiple arm capability
+
+```run-python
+def Spiral_normal_distributions(image,table,spiral_points,
+								num_samples,half_line_width,
+								plot,analysis,spiral_points2=None):
+    """
+    Computes normal distributions along a spiral arm in an astronomical image.
+
+    Parameters:
+    -----------
+    image : numpy.ndarray
+        The input astronomical image.
+    table : astropy.table.table.Table
+        A table containing galaxy properties.
+    spiral_points : numpy.ndarray
+        An array of points on the spiral arm.
+    num_samples : int
+        Number of samples to be taken along the spiral arm.
+    half_line_width : int
+        Half-width of the line in pixels.
+    plot : bool
+        Whether or not to plot the output.
+    analysis : bool
+        Whether or not to perform an analysis on the plotted output.
+
+	kwargs*:
+    --------
+    spiral_points2: numpy.ndarray
+        An array of points on the other spiral arm.
+
+	Notes:
+    ------
+    spiral_points2 as a kwarg* allows for the function to run on one or two arms with a default of one.
+    The Resulting plots show both overlays and then each normal sampled image in two labeled subplots.
+
+
+    Returns:
+    --------
+    numpy.ndarray
+        A transposed array of stacked pixel values representing the normal distributions.
+    """
+    # Get equations of normal lines using above function
+    m_array, c_array, tangent_points = get_normals(spiral_points,num_samples)
+
+    # Calculate distance of each tangent point in terms of R_e
+    # First collect centers and R_e from table
+    x0 = table['x'] + image.shape[1]/2
+    y0 = table['y'] + image.shape[0]/2
+    R_e = 10**(table['log_re'])
+
+	# Loop through tangent points and calculate radius at each point
+    radii_in_pixels = np.empty(len(tangent_points))
+    for i in range(0,len(tangent_points)):
+        radii_in_pixels[i] =  np.sqrt((x0-tangent_points[i,0])**2+(y0-tangent_points[i,1])**2)
+
+    # Get tangent_points in terms of R_e
+    radii_in_R_e = radii_in_pixels/R_e
+
+    # Sample radii array to get y_ticks
+    y_tick_samples = np.linspace(0,len(radii_in_R_e)-1,5).astype(int)
+
+    y_ticks = radii_in_R_e[y_tick_samples]
+    y_tick_labels = np.array(['{}'.format(np.around(y_ticks[0],1)),
+                              '{}'.format(np.around(y_ticks[1],1)),
+                              '{}'.format(np.around(y_ticks[2],1)),
+                              '{}'.format(np.around(y_ticks[3],1)),
+                              '{}'.format(np.around(y_ticks[4],1))])
+
+    # Set up Params for x_ticks
+    quarter_line_width = half_line_width/2
+    line_width = half_line_width*2
+
+    # Stack sampled pixels into image
+    stacked_line_pixels = np.zeros((line_width,len(tangent_points)))
+
+    for j in range(1,len(tangent_points)):
+        array = get_pixels_on_line(tangent_points[j].astype(int),m_array[j],c_array[j],half_line_width)
+        line_pixel_values = np.empty(len(array))
+        for i in range(0,array.shape[0]):
+            line_pixel_values[i] = image[array[i,0],array[i,1]]
+        stacked_line_pixels[:,j] = line_pixel_values
+    stacked_line_pixels = stacked_line_pixels.T
+
+	if spiral_points2 is not None:
+        m_array2, c_array2, tangent_points2 = get_normals(spiral_points2, num_samples)
+        stacked_line_pixels2 = np.zeros((line_width, len(tangent_points2)))
+  
+        for j in range(1, len(tangent_points2)):
+            array = get_pixels_on_line(tangent_points2[j].astype(int), m_array2[j], c_array2[j], half_line_width)
+            line_pixel_values = np.empty(len(array))
+            for i in range(0, array.shape[0]):
+                line_pixel_values[i] = image[array[i, 0], array[i, 1]]
+            stacked_line_pixels2[:, j] = line_pixel_values
+
+        stacked_line_pixels2 = stacked_line_pixels2.T
+
+	# Plotting section
+    if plot == True:
+        colours =  plt.cm.plasma(np.linspace(0,1,len(tangent_points)))
+
+		plt.figure()
+        plt.imshow(image)#,vmin=1000,vmax=1200)
+        plt.plot(spiral_points[:,0],spiral_points[:,1],'r')
+        plt.xlim(0,image.shape[1])
+        plt.ylim(0,image.shape[0])
+        plt.axis('off')
+
+        for i in range(1,len(tangent_points)):
+
+            arr = get_pixels_on_line(tangent_points[i].astype(int),m_array[i],c_array[i],20)
+            arr = np.asarray(arr).astype(int)
+            if analysis == True:
+                if i%10 == 0:
+                    plt.plot(arr[:,0],arr[:,1],c='k')
+                else:
+                    continue
+            else:
+                plt.plot(arr[:,0],arr[:,1],c=colours[i])
+
+        if spiral_points2 is not None:
+            plt.plot(spiral_points2[:,0],spiral_points2[:,1],'r')
+
+			for i in range(1,len(tangent_points2)):
+                arr2 = get_pixels_on_line(tangent_points2[i].astype(int),m_array2[i],c_array2[i],20)
+                arr2 = np.asarray(arr2).astype(int)
+
+                if analysis == True:
+                    if i%10 == 0:
+                        plt.plot(arr2[:,0],arr2[:,1],c='k')
+                    else:
+                        continue
+                else:
+                    plt.plot(arr2[:,0],arr2[:,1],c=colours[i])
+
+        plt.gca().invert_yaxis()
+
+        if spiral_points2 is not None:
+            # Create a figure with two subplots side by side
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+  
+            # Set title and plot for Spiral Arm 1
+            ax1.set_title('Arm 1')
+            ax1.imshow(stacked_line_pixels, aspect='auto', origin='lower')
+            ax1.set_xticks([0, half_line_width/2,
+             half_line_width, half_line_width*1.5, line_width-1],
+                        ['-{}'.format(half_line_width),
+                         '-{}'.format(int(quarter_line_width)), '0',
+                            '{}'.format(int(quarter_line_width)), '{}'.format(half_line_width)])
+            ax1.set_yticks(y_tick_samples, y_tick_labels)
+            ax1.set_xlabel('Distance from Spiral fit (pixels)')
+            ax1.set_ylabel('Radial Distance/ $R_e$ ')
+            if analysis == True:
+                ax1.hlines(np.arange(0, len(tangent_points2), 10), 0, stacked_line_pixels2.shape[1]-1, colors='k')
+
+            # Set title and plot for Spiral Arm 2
+            ax2.set_title('Arm 2')
+            ax2.imshow(stacked_line_pixels2, aspect='auto', origin='lower')
+            ax2.set_xticks([0, half_line_width/2,
+             half_line_width, half_line_width*1.5, line_width-1],
+                        ['-{}'.format(half_line_width), '-{}'.format(int(quarter_line_width)), '0',
+                            '{}'.format(int(quarter_line_width)), '{}'.format(half_line_width)])
+            ax2.set_yticks(y_tick_samples, y_tick_labels)
+            ax2.set_xlabel('Distance from Spiral fit (pixels)')
+            ax2.set_ylabel('Radial Distance/ $R_e$ ')
+            if analysis == True:
+                ax2.hlines(np.arange(0, len(tangent_points2), 10), 0, stacked_line_pixels2.shape[1]-1, colors='k')
+        else:  
+            plt.figure()
+            plt.imshow(stacked_line_pixels,aspect='auto',origin='lower') # This is quite amazing! #,vmin=1000,vmax=1100
+           plt.xticks([0,half_line_width/2,half_line_width,half_line_width*1.5,line_width-1],
+                    ['-{}'.format(half_line_width),
+                    '-{}'.format(int(quarter_line_width)),'0',
+                     '{}'.format(int(quarter_line_width)),
+                     '{}'.format(half_line_width)])
+            plt.yticks(y_tick_samples,y_tick_labels)
+            plt.xlabel('Distance from Spiral fit (pixels)')
+            plt.ylabel('Radial Distance/ $R_e$ ')
+            if analysis == True:
+              plt.hlines(np.arange(0,len(tangent_points),10),
+              0,stacked_line_pixels.shape[1]-1,colors='k')
+    return stacked_line_pixels.T
+```
+**Update: Spiral_normal_distributions**
+
+- `spiral_points2` as a kwarg* allows for the function to run on one or two arms with a default of one. The Resulting plots show both overlays and then each normal sampled image in two labelled subplots.
+
+
+## Function:
+```run-python
+def Overlay_table_info(Image,Table,inner_multiple,outer_multiple):
+    """
+    Overlay a circle and two rings over an image at the position and size specified by a table.
+
+	Parameters
+    ----------
+    Image : ndarray
+        A 2D array representing the image to be plotted.
+
+    Table : dict
+        A dictionary containing the table information with keys 'x', 'y', and 'log_re'.
+        'x' and 'y' represent the position of the galaxy in pixels, and 'log_re' represents
+        the logarithm of the effective radius of the galaxy in units of pixels.
+    inner_multiple : float
+        A positive number specifying the radius multiplier for the inner ring with respect to R_e.
+    outer_multiple : float
+        A positive number specifying the radius multiplier for the outer ring with respect to R_e.
+
+ 
+    Returns
+    -------
+    None
+        This function displays the plot but does not return anything.
+
+    Notes
+
+    -----
+    The function overlays a circle patch representing the galaxy's effective radius,
+    and two ring patches (inner and outer) centered on the same position as the circle patch,
+    with radii specified as multiples of the effective radius. The function also plots the
+    image with a red 'x' marker indicating the center of the galaxy.
+    """
+
+    # Get table information
+    x_centre = Image.shape[1]/2 + Table['x']
+    y_centre = Image.shape[0]/2 + Table['y']
+    R_e      = 10**Table['log_re']
+
+    # Create the Circle patch using table information
+    R_e_patch = plt.Circle((x_centre,y_centre),R_e,fill=None)
+    inner_multiple_patch = plt.Circle((x_centre,y_centre),R_e*inner_multiple,fill=None,color='r',linestyle='--')
+    outer_multiple_patch = plt.Circle((x_centre,y_centre),R_e*outer_multiple,fill=None,color='r',linestyle='--')
+
+    # Begin plotting
+    fig, ax = plt.subplots()
+    ax.imshow(Image)
+    ax.plot(x_centre,y_centre,'rx')
+    ax.add_patch(R_e_patch)
+    ax.add_patch(inner_multiple_patch)
+    ax.add_patch(outer_multiple_patch)
+```
+**Function: Overlay_table_info**
+This function overlays a circle and two rings over an image at the position and size specified by a table. It takes in four parameters:
+
+-   `Image` (ndarray): A 2D array representing the image to be plotted.
+-   `Table` (dict): A dictionary containing the table information with keys 'x', 'y', and 'log_re'. 'x' and 'y' represent the position of the galaxy in pixels, and 'log_re' represents the logarithm of the effective radius of the galaxy in units of pixels.
+-   `inner_multiple` (float): A positive number specifying the radius multiplier for the inner ring with respect to R_e.
+-   `outer_multiple` (float): A positive number specifying the radius multiplier for the outer ring with respect to R_e.
+
+The function overlays a circle patch representing the galaxy's effective radius, and two ring patches (inner and outer) centered on the same position as the circle patch, with radii specified as multiples of the effective radius. The function also plots the image with a red 'x' marker indicating the center of the galaxy.
+
+The function does not return anything, but it displays the plot.
+
+## Inputs
+
+-   `Image` (ndarray): A 2D array representing the image to be plotted.
+-   `Table` (dict): A dictionary containing the table information with keys 'x', 'y', and 'log_re'. 'x' and 'y' represent the position of the galaxy in pixels, and 'log_re' represents the logarithm of the effective radius of the galaxy in units of pixels.
+-   `inner_multiple` (float): A positive number specifying the radius multiplier for the inner ring with respect to R_e.
+-   `outer_multiple` (float): A positive number specifying the radius multiplier for the outer ring with respect to R_e.
+
+## Outputs
+
+-   None: This function displays the plot but does not return anything.
+
+## Function:
+```run-python
+def pitch_angle_against_radius(Image,Table):
+    """
+    Calculates pitch angles against inner radii for a given image and table data.
+
+	Parameters:
+        Image (array): The input image for which pitch angles need to be calculated.
+        Table (array): The input table data associated with the image.
+
+      Returns:
+        Inner_radii_multiples (array): An array of inner radii multiples ranging from 0.3 to 1 with 70 equally spaced values.
+        phi_array (array): An array of pitch angles, where each element represents the pitch angle at a specific combination of inner radii multiple and dominant harmonic mode. The shape of phi_array is (len(Inner_radii_multiples), len(m_array)).
+    """
+
+    # Need to create an array of inner radii
+    Inner_radii_multiples = np.linspace(0.3,1,70)
+
+    # Create array of dominant harmonic modes
+    m_array = np.arange(0,6,1)+1
+
+    # Create an empty array of pitch angles
+    phi_array = np.empty((len(Inner_radii_multiples),len(m_array)))
+    A_p_max_array = np.empty((len(Inner_radii_multiples),len(m_array)))
+
+    for j in range(0,phi_array.shape[1]):
+        for i in range(0,phi_array.shape[0]):
+            A, A_p_m, p, SN_w, p_max, SN_m, phi_array[i,j] = Spiral_power_spec(Image,Table,Inner_radii_multiples[i],m_array[j],byte_order=True)
+            A_p_max_array[i,j] = np.max(A)
+ 
+    # Calculate relative power
+    Relative_A_p_max_array = np.empty_like(A_p_max_array)
+    for i in range(0,len(A_p_max_array)):
+        Relative_A_p_max_array[i,:] = A_p_max_array[i,:]/np.sum(A_p_max_array[i,:])
+
+    return Inner_radii_multiples, phi_array, Relative_A_p_max_array
+```
+**Function: pitch_angle_against_radius**
+
+This function takes an input image and table data associated with the image and calculates pitch angles against inner radii. It returns two arrays, `Inner_radii_multiples` and `phi_array`.
+
+## Inputs
+
+-   `Image` (array): The input image for which pitch angles need to be calculated.
+-   `Table` (array): The input table data associated with the image.
+
+## Outputs
+
+-   `Inner_radii_multiples` (array): An array of inner radii multiples ranging from 0.3 to 1 with 70 equally spaced values.
+-   `phi_array` (array): An array of pitch angles, where each element represents the pitch angle at a specific combination of inner radii multiple and dominant harmonic mode. The shape of `phi_array` is `(len(Inner_radii_multiples), len(m_array))`.
+
+## Function:
+```run-python
+def plot_radial_pitch_angle_dependance(Candidate,phi_array,
+Inner_radii_multiples):
+    """
+    Plots the radial dependence of pitch angles for a given candidate.
+
+      Parameters:
+        Candidate (str): The name or identifier of the candidate for which the plot is being generated.
+        phi_array (array): An array of pitch angles, where each element represents the pitch angle at a specific combination of inner radii multiple and dominant harmonic mode. The shape of phi_array is (len(Inner_radii_multiples), len(m_array)).
+        Inner_radii_multiples (array): An array of inner radii multiples ranging from 0.3 to 1 with 70 equally spaced values.
+
+    Returns:
+        Plot: A plot showing the radial dependence of pitch angles for different harmonic modes, with the average winding angle for m=2 harmonic mode indicated in the plot title. The plot has pitch angle values on the y-axis, inner radii multiples on the x-axis, and different harmonic modes represented by different line styles/colors. The plot also includes a legend with labels for each harmonic mode. The y-axis is limited to a range of -90 to 90 degrees.
+    """    
+    M_str_arr = np.array(['m = 1','m = 2','m = 3','m = 4','m = 5','m = 6'])
+
+    plt.figure()
+    avg_pitch = np.around(np.mean(phi_array[:,1]),1)
+    plt.title('{} Average winding angle (m=2): {}\\u00B0'.format(Candidate,avg_pitch))
+    plt.ylabel('Pitch angle (deg)')
+    plt.xlabel('Inner Radius / $R_e$')
+
+    for i in range(0,len(M_str_arr)):
+        if i == 1:
+            plt.plot(Inner_radii_multiples,phi_array[:,i],c='k')
+        else:
+            plt.plot(Inner_radii_multiples,phi_array[:,i],linestyle='--')
+
+    plt.ylim(-90,90)    
+    plt.legend(M_str_arr)
+```
+**Function: plot_radial_pitch_angle_dependance**
+This function generates a plot that shows the radial dependence of pitch angles for a given candidate. The plot includes pitch angle values on the y-axis, inner radii multiples on the x-axis, and different harmonic modes represented by different line styles/colours. The function also computes and displays the average winding angle for m=2 harmonic mode in the plot title.
+
+### Inputs
+
+-   `Candidate` (str): The name or identifier of the candidate for which the plot is being generated.
+-   `phi_array` (array): An array of pitch angles, where each element represents the pitch angle at a specific combination of inner radii multiple and dominant harmonic mode. The shape of `phi_array` is (`len(Inner_radii_multiples), len(m_array)`).
+-   `Inner_radii_multiples` (array): An array of inner radii multiples ranging from 0.3 to 1 with 70 equally spaced values.
+
+### Output
+
+-   `Plot`: A plot showing the radial dependence of pitch angles for different harmonic modes, with the average winding angle for m=2 harmonic mode indicated in the plot title. The plot has pitch angle values on the y-axis, inner radii multiples on the x-axis, and different harmonic modes represented by different line styles/colours. The plot also includes a legend with labels for each harmonic mode. The y-axis is limited to a range of -90 to 90 degrees.
+
+
