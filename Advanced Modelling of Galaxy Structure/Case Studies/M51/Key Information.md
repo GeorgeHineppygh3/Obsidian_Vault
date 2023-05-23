@@ -2,23 +2,15 @@
 s:: true
 ---
 ---
-s:: true
----
----
-s:: true
----
----
-s:: true
----
 
 
 Inner lindblad resonance - 0.8kpc - Fletcher 2011
 Inner lindblad resonance - 1.3kpc - Elmegreen 1989
 corotation radius - 4.8kpc -  Elmegreen 1989
 
-corotation ~ 4.6kpc - Merrifield - 2008
+corotation ~ 4.6kpc - Merrifield (TWR) - 2008
 
-corotation - 5.3kpc - Tremain and Weinberg - 1984
+corotation - 5.3kpc - Tremain and Weinberg (TW) - 1984
 
 https://adsabs.harvard.edu/full/1989ApJ...343..602E
 

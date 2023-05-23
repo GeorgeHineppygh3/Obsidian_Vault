@@ -1,12 +1,6 @@
 ---
 s:: true
 ---
----
-s:: true
----
----
-s:: true
----
 
 ### Papers:
 - [2DFFT Paper - B. L. Davis.pdf](../../../../PDFs/2DFFT%20Paper%20-%20B.%20L.%20Davis.pdf)

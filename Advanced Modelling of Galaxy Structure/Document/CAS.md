@@ -1,12 +1,6 @@
 ---
 s:: true
 ---
----
-s:: true
----
----
-s:: true
----
 Need the functions...
 
 - [ ] This concentration index is a number, C, defined as the ratio of the 80%–20% curve of growth radii ($r_{80}$, $r_{20}$), within 1.5 times the Petrosian inverted radius at r($\\eta  = 0.2$), normalized by a logarithm; $$C = 5\\,log(r_{80}/ r_{20})$$

@@ -1,12 +1,7 @@
 ---
 s:: true
 ---
----
-s:: true
----
----
-s:: true
----
+
 ## Links:
 - [Creating Spiral fourier transform](../Code/Code%20description/2Dfft/Creating%20Spiral%20fourier%20transform.md)
 - [ISFT and SN - working book](../Code/Code%20description/2Dfft/ISFT%20and%20SN%20-%20working%20book.md)
@@ -95,7 +90,7 @@ Where $p_{max}$ is the value with the highest amplitude ($|A(p,m)|$) for a given
 
 In order to process the image array into \\ref{eqn:Fourier} in $I(u,\\theta)$ form; the galaxy must first be de-projected and processed to $I(r, \\theta)$ form and then sampled logarithmically. The deprojection follows a series of three affine transformations: rotation by position angle, stretch according to axis ratio and rotation and conversion to polar coordinates. 
 
-The transformations are applied to a set of image of $ln(r),\\, \\theta$ indices defined between the inner radius and closest image edge to the centre to ensure no pixels are sampled from outside the image bounds. The inner radius is taken as a multiple of the effective radius with criteria that the locus must fully contain the bulge and bar when present/necessary [come back to this when sure].
+The transformations are applied to a set of image of $ln(r),\\, \\theta$ indices defined between the inner radius and closest image edge to the centre to ensure no pixels are sampled from outside the image bounds. The inner radius is taken as a multiple of the effective radius with criteria that the locus must fully contain the bulge. [come back to this when sure].
 
 #### Regular Grid interpolation:
 
@@ -129,5 +124,21 @@ $$\\frac{S}{N} = (|A(p,m)|_{max} - L)/\\sigma$$
 
 where $A(p, m) _{max}$ is the maximum amplitude of the Fourier coefficients, $L$ is the mean level out of the main peak and $\\sigma$ is an rms estimate of the spectrum given by:
 $$\\sigma^2 = \\langle(|A(p,m)|-L)^2\\rangle$$ 
-
+Write up:
 ===============================================================
+
+Layout:
+- Introduction - past use of the technique
+- introduce the maths
+- explain how the code achieves the maths
+- fitting
+
+
+The spiral fitting used throughout this paper is accomplished through 2D Fourier transform decomposition techniques using a logarithmic spiral basis function.  The technique decomposes spiral structures, logarithmic or otherwise, into superpositions of logarithmic spirals of different pitch angles and number of arms. The decomposition is analogous to the usual Fourier method of signal representation as a superposition of sinusoidal functions of differing frequencies. As in Davis et al (2012) & Puerari et al. (2000) the amplitude of each Fourier component is calculated by
+
+$$A(p,m) = \\frac{1}{D}\\int_{-\\pi}^{\\pi}\\int_{r_{min}}^{r_{max}}I(u,\\theta)e^{i(m\\theta + pu)}\\;dud\\theta$$
+where $u ≡ ln \\,r$, $r$ (radius) and $\\theta$ (central angle) are in polar coordinates, $r_{min}$ is the inner radius, $r_{max}$ is the outer radius of the user-defined calculation annulus, and $D$ is a normalization factor written as:
+$$D =\\int_{-\\pi}^{\\pi}\\int_{r_{min}}^{r_{max}}I(u,\\theta)\\;dud\\theta$$
+$I(u, \\theta)$ is the distribution of light of a given galaxy, in a $(u, \\theta)$ plane, $m$ represents the number of arms or harmonic modes, and $p$ is the variable associated with the pitch angle $(\\phi)$, defined by;
+$$tan(\\phi) = \\frac{-m}{p_{max}}$$
+Where $p_{max}$ is the value with the highest amplitude ($|A(p,m)|$) for a given harmonic mode, $m$,  the argument of the complex component $A(p_{max},m)$ defines the phase angle, $\\Phi$, of the orientation of the spiral pattern. 
