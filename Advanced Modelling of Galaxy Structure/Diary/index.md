@@ -432,11 +432,11 @@ seems to be running out of memory on the GPU will try with not using the pre-all
 - [ ] run normal sampling on case studies
 - [ ] Create code that will run the stat functions on the server (save time) and outputs
 - [ ] Research Arm class
-- [ ] Fix Flux fraction
+- [x] Fix Flux fraction
 - [ ] work out co-rotation as a multiple of effective radius (M51 and M101)
 	- [ ] done for M51 and added to graph see [Key Information](../Case%20Studies/M51/Key%20Information.md)
 	- [ ] ![Pasted image 20230423123158.png](../../AA%20%20-%20%20Assets/Pasted%20image%2020230423123158.png)
-	- [ ] Updated this using the ne `R_e_in_KPC` function
+	- [ ] Updated this using the new `R_e_in_KPC` function
 	- [ ] ![Pasted image 20230423152625.png](../../AA%20%20-%20%20Assets/Pasted%20image%2020230423152625.png)
 - [x] Sort out putting notes online with Dad
 
@@ -444,3 +444,356 @@ seems to be running out of memory on the GPU will try with not using the pre-all
 It is interesting that the deviation from a stable pitch angle occurs at around 0.7$R_e$ in the green and red and earlier in ~0.1$R_e$ the blue band.
 
 The code drops out if the directory already exists - this has proved quite useful as it stops me from duplicating data.
+
+(24-04-23 - 25-04-23)
+
+- [x] Get a spiral fit on top of case studies (this has to work for the normal sampling)
+- [x] run normal sampling on case studies
+	- [ ] Need to get M101 working
+- [ ] Create code that will run the stat functions on the server (save time) and outputs
+- [x] Research Arm class
+	- [x] [Arm Class](../MISC/Arm%20Class.md)
+- [x] Research Corotation radius of M101
+	- [x] Scarano & Lépine (2013) - 'corotation radius for M101 of 15.6 ± 2.2 kpc'  
+- [x] Get the final data set running - have a look at them first though [have to double check now]
+
+26-04-23
+
+- [x] Email Steven
+- [x] arrange meeting
+	- [ ] Tomorrow at 4:00
+- Steven's suggestions
+	- [x] Plot the Stability of the arm measurement against a plot of 'relative power' of each mode - The $|A(p_{max},m_{max})|$ divided by the sum of of $|A(p_{max},m)|$ for all $m$ 
+	- [ ] Apply SFT to: 
+		- [ ] original image 
+		- [ ] non-parametric image
+		- [ ] original image filtered in other ways (e.g. high pass)
+	- [ ] Calculate the pitch angle as function of radius by calculating progressive annuli
+	- [ ] The arm 2 plot looks wrong - need to fix not sure how it is wrong though
+	- [x] Once we have the normal plots we can calculate colour for each pixel (difference in bands) - 'Then perhaps average over radius and look for trends in colour versus distance from the spiral fit'
+
+To do before the meeting:
+
+- [x] Gather plots for meeting minutes document
+- [x] Create meeting document
+- [x] restart PC
+- [x] Check on server
+	- [ ] Still running 12:53
+- [x] get M101 error
+	- [ ] running now
+- [x] check overleaf
+	- [ ] nothing in there
+- [x] reply to discord
+	- [x] nothing to say
+- [ ] Create notes page on why M51 and M101 and the data/ info
+- [ ] 
+
+
+29-04-23
+
+- [x] Check on server
+	- [x] Finished
+- [x] Create python files and an export system for flux fraction and CAS
+- [ ] Read through plans for plot
+- [x] Sort out histograms (envelope and seaborn)
+
+- [ ] Push `gax_fits` changes
+- [ ] Pull `gax_fits` changes to server
+- [x] Create python file for running CAS
+- [x] Create python file for running Flux fraction
+	- [ ] Examine the cases above 1 - find the reason
+	- [x] Also calculate the `non_param` bulge fraction
+
+- [x] Decide on a case study:
+- [x] Both good spirals? - 587732050555961424 - 588017724937142430
+	- [ ] Chosen 587732050555961424 despite lack of U band
+		- [ ] Way too low quality
+	- [x] Extract non-param
+	- [x] Apply SFT
+	- [ ] Apply SFT Radial Stability
+		- [x] Create documentation for new functions
+	- [ ] Fit over stable region
+	- [ ] Apply normal sampling
+	- [ ] Create normal line colour gradient
+
+THE IMAGE IS TOO SMALL !! HOW ARE WE SUPOSED TO GET DATA OUT OF 24 POINTS....
+
+
+- [ ] Examine Images and think of sources of reddening
+	- [ ] Get calibrated colour by finding zero point (look in header - fixed for SDSS): https://www.sdss4.org/dr14/algorithms/fluxcal/#SDSStoAB
+	
+		- 'To obtain a flux density from SDSS data, you need to work out `f/f0` (e.g. from the $asinh$ magnitudes in the `photoObj` files by using the inverse of the relations given [on the magnitudes page](https://www.sdss4.org/dr14/algorithms/magnitudes/#asinh)). This number is then the also the object's flux density, expressed as fraction of the AB zero-point flux density. Therefore, the conversion to flux density is'
+		
+	- [ ] Dust extinction - examine intensity drop as well
+		- [ ] Also look for evidence of dust in the image
+	- [ ] Metallicity - look for supporting evidence of the predicted metallicity of the area
+		- [x] Research Age-Metalicty Relation [AMR](../MISC/AMR.md)
+
+
+- [ ] Explore the viability of a Stellar population model
+	- [x] Create a notes page on all of the reasons that this is a bad idea [Stellar Population Model](../MISC/Stellar%20Population%20Model.md)
+	- [ ] This could be a rabbit hole - but find out
+
+- [ ] Create a function that looks at arm offset in the LNnr theta image through lines?
+
+
+30-04-23
+
+- [x] Examine the cases above 1 - Find the reason
+- [x] Read through plans for plot [Meeting Minutes 29-03-23](../Meeting%20Minutes/Meeting%20Minutes%2029-03-23.md)
+- [ ] Create all possible plots
+	- [ ] plots are fucked have emailed steven
+- [x] Create a graph of band averaged intensity and plot next to the colour gradient
+	- [ ] ![Pasted image 20230430142328.png](../../AA%20%20-%20%20Assets/Pasted%20image%2020230430142328.png)
+- [ ] Metallicity - look for supporting evidence of the predicted metallicity of the area - [Metallicity](../Case%20Studies/M51/Metallicity.md)
+
+'Using the high spatial resolution IFS data obtained by MUSE, Sanchez-Menguiano et al. (2018) found that spiral galaxies present a characteristic abundance slope of −0.10 ± 0.03 dex/Re between 0.5 Re and 1.5 Re. Our gradient measurement of the M51 disk is consistent with this characteristic slope.' - https://arxiv.org/pdf/2007.03188.pdf
+
+
+- [x] Get calibrated colour by finding zero point (look in header - fixed for SDSS): https://www.sdss4.org/dr14/algorithms/fluxcal/#SDSStoAB
+	
+	- 'To obtain a flux density from SDSS data, you need to work out `f/f0` (e.g. from the $asinh$ magnitudes in the `photoObj` files by using the inverse of the relations given [on the magnitudes page](https://www.sdss4.org/dr14/algorithms/magnitudes/#asinh)). This number is then the also the object's flux density, expressed as fraction of the AB zero-point flux density. Therefore, the conversion to flux density is'
+	
+	- The Hubble images have a zero points:
+		- $4270\\,Jy$ - B band
+		- $3610\\,Jy$ - G band
+		- $2840\\,Jy$ - R band
+
+- [x] convert flux to Janskys [Calibrating Flux](../MISC/Calibrating%20Flux.md)
+
+  
+- [x] Need to ask Steven if there is a way to make the ficl output have the background in it
+
+
+02-05-23
+
+Idea:
+
+Take the coefficients of the transformation matrix and multiply the image or maybe convolve
+
+Look up how to use the coefficients to translate pixel size to ra and dec.
+
+03-05-23
+
+- [x] Apply azimuthal averaging tool to the images with the highest flux fraction
+	- [x] Get highest flux frac from server
+	- [x] demonstrate SDSS background problem
+	- [ ] Create notes page on this and reference papers - need to know exactly what went wrong
+- [x] Update plan for presentation
+	- [x] Figures
+	- [x] Slides
+
+
+04-05-23
+
+- [x] Run radially averaged on isolated image
+	- [ ] think about what could be talked about from these
+- [x] Get M51 fits with strong headers 
+	- [ ] Apply fitting
+	- [x] Photometric calibration
+		- [ ] update the page
+	- [x] Look up star removal
+- [x] Create notes page on background problem and reference papers - need to know exactly what went wrong
+
+
+06-05-23
+
+- [x] Create notes page for presentation questions
+- [x] Create notes page for general research for the presentation
+- [x] Create personal plan
+- [x] go on a run
+
+
+08-05-23
+
+- [x] Email steven about a description of how the $\\chi^2$  works
+- [x] Practice presentation 5 times
+- [x] Finish questions
+- [ ] Start creating final figures
+	- [x] get RA and DEC as ticks
+- [x] Run SFT on new M51
+- [ ] Run M51 on server with zero background instead
+- [ ] Get normal image of new M51
+
+13-05-23
+
+- [x] Organise the troops on discord
+	- [x] distribute work
+	- [x] send Aden the data
+- [x] Create a figures list
+	- [x] identify ready - made - un-made
+- [ ] collate figures into labelled folders
+- [x] add folder structure to overleaf
+- [x] Write non param plan
+- [x] Write non param section
+- [x] create non param figures
+
+
+14-05-23
+
+- [ ]   Think of abstract topics
+	- [ ]  morphological prominence classification
+	- [ ]  normal sampling to study arms while isolated
+	- [ ]   colour gradient affirmation
+- [ ] collate figures into labelled folders
+	- [ ] Sort out text size etc for all images
+
+
+- [x] Add the uncertainty to the dominant pitch angle mode
+	- [x] std deviation over stable region weighted by stable region length
+	- [x] Change the code to stop at 90% minimum edge distance
+- [ ] Add to data section the biasing of the 2Dfft section as a fore-note for the later section
+
+- [ ] Add North by East marker to image and set ticks and grid lines as RA and DEC in degrees
+
+
+
+
+16-05-23
+
+KPNO: To do...
+- [x] Run number of arms
+- [x] run winding angle stability
+- [x] calculate gradient and errors
+- [x] plot gradient and errors on image
+- [ ] get unwound normal sample image
+	- [ ] see dad tomorrow
+- [ ] get colours with normal
+- [ ] calibrate colours
+
+17-05-23
+
+Data:
+- [x] add means and reference galaxies on flux frac histograms
+- [ ] set the $H_\\alpha$ zeros to background
+- [ ] re run the Case study data
+	- [ ] Sort out background
+	- [ ] Run the V band to get the Source params table
+- [x] Sort out normal images
+- [x] Get colour normals
+- [x] radially average
+- [x] calibrate flux
+
+
+Document:
+- [x] Update plan
+	- [x] Plan flux fraction
+	- [x] write flux fraction
+		- [x] get figures + captions + common names
+	- [x] Plan discussion
+		- [x] create list of points
+	- [ ] Sort out normal section
+		- [ ] write about gradient divergence
+		- [ ] write about radial averaging
+	- [ ] create list of science conclusions
+		- [x] outsourced
+
+- [x] add references to Shivani's intro
+	- [x] She is doing it
+
+
+18-05-23
+
+- [ ] Edit and trim Shivani's intro
+	- [ ] create logical plan for how we link each bit
+- [ ] Sort out normal section
+	- [x] write about gradient divergence
+	- [x] Figures
+
+- [ ] Sort out Discussion Figure placement
+	- [x] I think this will get better with more text
+	- [x] it did
+
+- [x] Add how the images are processed into data reduction
+
+- [ ] Case Study Section
+	- [x] Create notes page
+	- [x] Create plan
+	- [x] fill in sections
+		- [ ] get numbers
+	- [ ] gather figures
+		- [x] KPNO2.1 sort out co-ord ticks
+		- [ ] get iso and org unwound single plot
+		- [x] winding angle stability in better quality
+		- [ ] 
+	- [ ] do captions
+
+
+19-05-23
+
+- [x] sort figures for case study section
+	- [x] Do captions for all images
+- [x] Create a plan for the discussion of the case study ---> [Discussion](../Document/Discussion.md)
+- [x] Write the discussion
+	- [x] first half
+	- [x] second half - outsourced
+
+
+- [ ] Edit and trim Shivani's intro
+	- [ ] create logical plan for how we link each bit
+- [ ] Edit and review Shivani's arm gradients discussion
+- [x] Hurry along Aden [13:00]
+	- no response
+
+
+- [x] Review list of science conclusions
+- [x] write conclusion
+	- [x] once complete begin abstract structure
+- [x] Write abstract
+- [ ] sort out the references issue
+
+- [ ] Read through the document and create a final list of remaining tasks and tidy's
+
+- [ ] get final isolated normal gradient figure
+- [ ] would be good to demonstrate invariance to redshift
+
+20-05-23
+
+- [x] Run the V band - create the isolated colour graphs 
+- [ ] calculate the average colour gradients in the heavily smoothed images and subtract - demonstrate that the arms themselves are like this
+- [ ] 
+
+- [x] Create all suggested changes document [Editing](../Document/Editing.md)
+- [x] Create copy of the document
+- [x] Read through the entire document and write down all the proposed changes
+- [x] notify everyone of the proposed changes
+	- [ ] sort out meeting on it?
+
+
+21-05-23
+
+- [x] calculate the average colour gradients in the heavily smoothed images and subtract - demonstrate that the arms themselves are like this?
+- [x] write reasons for graph observations
+- [x] write discussion section for case study
+- [x] add arm isolation conclusion point
+- [x] check all figures
+	- [ ] make sure you sort out the azimuth image legend
+- [x] look for Shivani's intro edits
+- [x] compile document and distribute
+- [x] sort out ordering and figure placement
+- [x] send steven the proof read document
+
+james webb proves spirals die as spirals
+
+-90 to 90
+
+rms to RMS
+
+link the concentration to negative flux
+
+confining the colour range
+
+
+21-05-23
+
+
+- [ ] sort out references
+- [x] fix azimuth figure
+- [x] fill in declaration
+- [x] submit declaration
+- [ ] upload diary
+	- [ ] get dads help
+- [x] upload notebooks
+- [x] Have meeting
+- [x] trim beard
+- [x] go to Dylan's
